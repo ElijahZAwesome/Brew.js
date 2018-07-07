@@ -635,7 +635,7 @@ namespace sdl
         else if(argc == 1)
         {
             int id = duk_get_number(ctx, 0);
-            int x = -1;
+            int h = -1;
             for(int i = 0; i < gfxblock.size(); i++)
             {
                 if(gfxblock[i].id == id)
