@@ -27,6 +27,7 @@ namespace sdl
         int hspeed;
         int vspeed;
         bool phys;
+		bool touchable;
     };
 
     struct Text
@@ -549,6 +550,29 @@ namespace sdl
         }
         return 1;
     }
+	
+	inline int Object_img(duk_context *ctx) {
+		if(duk_get_top(ctx) >= 1) {
+        const char *path = duk_get_string(ctx, 0);
+		int x = 0;
+		int y = 0;
+		int depth = 1;
+		SDL_Surface *srf = IMG_Load(path);
+        if(srf)
+        {
+                int cid = rand();
+                int w = srf->w;
+                int h = srf->h;
+                SDL_SetColorKey(srf, SDL_TRUE, SDL_MapRGBA(srf->format, 0, 0, 0, 0));
+                SDL_Texture *txt = SDL_CreateTextureFromSurface(sdl_render, srf);
+                gfxblock.push_back({ cid, txt, depth, x, y, w, h, false, 0, 0, false });
+                duk_push_number(ctx, cid);
+        }
+        SDL_FreeSurface(srf);
+		} else {
+			return 1;
+		}
+	}
 
     inline int Object_x(duk_context *ctx)
     {
@@ -579,6 +603,72 @@ namespace sdl
                 }
             }
             duk_push_number(ctx, x);
+        }
+        return 1;
+    }
+
+    inline int Object_w(duk_context *ctx)
+    {
+        int argc = duk_get_top(ctx);
+        if(argc >= 2)
+        {
+            int id = duk_get_number(ctx, 0);
+            int w = duk_get_number(ctx, 1);
+            for(int i = 0; i < gfxblock.size(); i++)
+            {
+                if(gfxblock[i].id == id)
+                {
+                    gfxblock[i].w = w;
+                    break;
+                }
+            }
+        }
+        else if(argc == 1)
+        {
+            int id = duk_get_number(ctx, 0);
+            int w = -1;
+            for(int i = 0; i < gfxblock.size(); i++)
+            {
+                if(gfxblock[i].id == id)
+                {
+                    w = gfxblock[i].w;
+                    break;
+                }
+            }
+            duk_push_number(ctx, w);
+        }
+        return 1;
+    }
+
+    inline int Object_h(duk_context *ctx)
+    {
+        int argc = duk_get_top(ctx);
+        if(argc >= 2)
+        {
+            int id = duk_get_number(ctx, 0);
+            int h = duk_get_number(ctx, 1);
+            for(int i = 0; i < gfxblock.size(); i++)
+            {
+                if(gfxblock[i].id == id)
+                {
+                    gfxblock[i].h = h;
+                    break;
+                }
+            }
+        }
+        else if(argc == 1)
+        {
+            int id = duk_get_number(ctx, 0);
+            int h = -1;
+            for(int i = 0; i < gfxblock.size(); i++)
+            {
+                if(gfxblock[i].id == id)
+                {
+                    h = gfxblock[i].h;
+                    break;
+                }
+            }
+            duk_push_number(ctx, h);
         }
         return 1;
     }
@@ -740,6 +830,39 @@ namespace sdl
                 if(gfxblock[i].id == id)
                 {
                     ph = gfxblock[i].phys;
+                    break;
+                }
+            }
+            duk_push_number(ctx, ph);
+        }
+        return 1;
+    }
+	
+	    inline int Object_touchable(duk_context *ctx)
+    {
+        int argc = duk_get_top(ctx);
+        if(argc >= 2)
+        {
+            int id = duk_get_number(ctx, 0);
+            bool ph = duk_get_number(ctx, 1);
+            for(int i = 0; i < gfxblock.size(); i++)
+            {
+                if(gfxblock[i].id == id)
+                {
+                    gfxblock[i].touchable = ph;
+                    break;
+                }
+            }
+        }
+        else if(argc == 1)
+        {
+            int id = duk_get_number(ctx, 0);
+            int ph = false;
+            for(int i = 0; i < gfxblock.size(); i++)
+            {
+                if(gfxblock[i].id == id)
+                {
+                    ph = gfxblock[i].touchable;
                     break;
                 }
             }
@@ -1038,10 +1161,16 @@ namespace sdl
 	    duk_put_global_string(ctx, "__sdl__Object_hide");
         duk_push_c_function(ctx, Object_isShown, DUK_VARARGS);
 	    duk_put_global_string(ctx, "__sdl__Object_isShown");
+        duk_push_c_function(ctx, Object_img, DUK_VARARGS);
+	    duk_put_global_string(ctx, "__sdl__Object_img");
         duk_push_c_function(ctx, Object_x, DUK_VARARGS);
 	    duk_put_global_string(ctx, "__sdl__Object_x");
         duk_push_c_function(ctx, Object_y, DUK_VARARGS);
 	    duk_put_global_string(ctx, "__sdl__Object_y");
+        duk_push_c_function(ctx, Object_w, DUK_VARARGS);
+	    duk_put_global_string(ctx, "__sdl__Object_w");
+        duk_push_c_function(ctx, Object_h, DUK_VARARGS);
+	    duk_put_global_string(ctx, "__sdl__Object_h");
         duk_push_c_function(ctx, Object_depth, DUK_VARARGS);
 	    duk_put_global_string(ctx, "__sdl__Object_depth");
         duk_push_c_function(ctx, Object_hspeed, DUK_VARARGS);
@@ -1050,6 +1179,8 @@ namespace sdl
 	    duk_put_global_string(ctx, "__sdl__Object_vspeed");
         duk_push_c_function(ctx, Object_usesPhysics, DUK_VARARGS);
 	    duk_put_global_string(ctx, "__sdl__Object_usesPhysics");
+        duk_push_c_function(ctx, Object_touchable, DUK_VARARGS);
+	    duk_put_global_string(ctx, "__sdl__Object_touchable");
         duk_push_c_function(ctx, Object_checkCollide, DUK_VARARGS);
 	    duk_put_global_string(ctx, "__sdl__Object_checkCollide");
         duk_push_c_function(ctx, Object_leftCollide, DUK_VARARGS);

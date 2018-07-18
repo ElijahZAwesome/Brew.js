@@ -53,6 +53,22 @@ module.exports.exists = function(Path)
 };
 
 /**
+    Lists files in a folder.
+    @function readdir
+    @param {String} Path The folder's path
+    @example
+    var fs = require("fs");
+	var exist = fs.readdir("sdmc:/Text.txt");
+    @return {dirent} Files
+*/
+module.exports.readdir = function(Path)
+{
+    var ex = __fs__readdir(Path);
+	var arr = ex.split(';');
+    return arr;
+};
+
+/**
     Creates a directory. (if it doesn't exist already)
     @function mkdir
     @param {String} Dir The directory to create
