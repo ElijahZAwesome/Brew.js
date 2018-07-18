@@ -349,6 +349,29 @@ obj.x(50); // Set X to 50
 var cx = obj.x(); // Get current X, should return 50
     @return {Number} The current X coordinate, if no argument was passed.
 */
+module.exports.Object.prototype.img = function()
+{
+    if(arguments.length >= 1)
+    {
+        var img = arguments[0];
+        __sdl__Object_img(this.ID, img);
+    }
+    else
+    {
+        return;
+    }
+};
+
+/**
+    Gets or sets the X coordinate of the object.
+    @param {Number} [NewX] The new X coordinate to set
+    @example
+    var sdl = require("sdl");
+var obj = new sdl.Object("sdmc:/Image.jpg");
+obj.x(50); // Set X to 50
+var cx = obj.x(); // Get current X, should return 50
+    @return {Number} The current X coordinate, if no argument was passed.
+*/
 module.exports.Object.prototype.x = function()
 {
     if(arguments.length >= 1)
@@ -384,6 +407,54 @@ module.exports.Object.prototype.y = function()
     {
         var y = __sdl__Object_y(this.ID);
         return y;
+    }
+};
+
+/**
+    Gets or sets the width of the object.
+    @param {Number} [NewW] The new width to set
+    @example
+    var sdl = require("sdl");
+var obj = new sdl.Object("sdmc:/Image.jpg");
+obj.w(50); // Set width to 50
+var cw = obj.w(); // Get current width, should return 50
+    @return {Number} The current width, if no argument was passed.
+*/
+module.exports.Object.prototype.w = function()
+{
+    if(arguments.length >= 1)
+    {
+        var w = arguments[0];
+        __sdl__Object_w(this.ID, w);
+    }
+    else
+    {
+        var w = __sdl__Object_w(this.ID);
+        return w;
+    }
+};
+
+/**
+    Gets or sets the height of the object.
+    @param {Number} [NewH] The new height to set
+    @example
+    var sdl = require("sdl");
+var obj = new sdl.Object("sdmc:/Image.jpg");
+obj.h(50); // Set height to 50
+var ch = obj.h(); // Get current height, should return 50
+    @return {Number} The current height, if no argument was passed.
+*/
+module.exports.Object.prototype.h = function()
+{
+    if(arguments.length >= 1)
+    {
+        var h = arguments[0];
+        __sdl__Object_h(this.ID, h);
+    }
+    else
+    {
+        var h = __sdl__Object_h(this.ID);
+        return h;
     }
 };
 

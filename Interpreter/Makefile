@@ -31,8 +31,8 @@ include $(DEVKITPRO)/libnx/switch_rules
 #     - <libnx folder>/default_icon.jpg
 #---------------------------------------------------------------------------------
 
-APP_TITLE	:=	Brew.js - JavaScript API & interpreter
-APP_AUTHOR	:=	XorTroll
+APP_TITLE	:=	Brew.js - Elijah's fork
+APP_AUTHOR	:=	XorTroll & ElijahZAwesome
 APP_VERSION	:=	1.0
 
 TARGET		:=	Brew.js
